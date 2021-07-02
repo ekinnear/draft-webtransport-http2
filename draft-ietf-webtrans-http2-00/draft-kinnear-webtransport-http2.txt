@@ -5,13 +5,13 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 26 August 2021                                         T. Pauly
+Expires: 3 January 2022                                         T. Pauly
                                                               Apple Inc.
                                                              V. Vasiliev
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                        22 February 2021
+                                                             2 July 2021
 
 
                        WebTransport using HTTP/2
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 August 2021.
+   This Internet-Draft will expire on 3 January 2022.
 
 Copyright Notice
 
@@ -178,8 +178,8 @@ Table of Contents
 3.2.  Extended CONNECT in HTTP/2
 
    [RFC8441] defines an extended CONNECT method in Section 4, enabled by
-   the SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint doesn
-   not need to send both SETTINGS_ENABLE_CONNECT_PROTOCOL and
+   the SETTINGS_ENABLE_CONNECT_PROTOCOL parameter.  An endpoint does not
+   need to send both SETTINGS_ENABLE_CONNECT_PROTOCOL and
    SETTINGS_ENABLE_WEBTRANSPORT; the SETTINGS_ENABLE_WEBTRANSPORT
    setting implies that an endpoint supports extended CONNECT.
 
