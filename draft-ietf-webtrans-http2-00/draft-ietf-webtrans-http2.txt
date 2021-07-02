@@ -15,7 +15,7 @@ Expires: 3 January 2022                                         T. Pauly
 
 
                        WebTransport using HTTP/2
-                draft-kinnear-webtransport-http2-latest
+                    draft-ietf-webtrans-http2-latest
 
 Abstract
 
@@ -33,7 +33,7 @@ Note to Readers
    <https://mailarchive.ietf.org/arch/search/?email_list=webtransport>.
 
    The repository tracking the issues for this draft can be found at
-   <https://github.com/ekinnear/draft-webtransport-http2/issues>.  The
+   <https://github.com/ietf-wg-webtrans/draft-webtransport-http2>.  The
    web API draft corresponding to this document can be found at
    <https://w3c.github.io/webtransport/>.
 

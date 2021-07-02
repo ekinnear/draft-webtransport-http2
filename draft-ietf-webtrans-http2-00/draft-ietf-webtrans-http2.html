@@ -20,7 +20,7 @@ within the same HTTP/2 connection.
     " name="description">
 <meta content="xml2rfc 3.8.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
-<meta content="draft-kinnear-webtransport-http2-latest" name="ietf.draft">
+<meta content="draft-ietf-webtrans-http2-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.8.0
     Python 3.9.5
@@ -39,7 +39,7 @@ within the same HTTP/2 connection.
     setuptools 52.0.0
     six 1.15.0
 -->
-<link href="draft-kinnear-webtransport-http2.xml" rel="alternate" type="application/rfc+xml">
+<link href="draft-ietf-webtrans-http2.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
 <style type="text/css">@font-face {
   font-family: 'Lora';
@@ -1029,7 +1029,7 @@ address div.right {
 <dt class="label-workgroup">Workgroup:</dt>
 <dd class="workgroup">webtrans</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-kinnear-webtransport-http2-latest</dd>
+<dd class="internet-draft">draft-ietf-webtrans-http2-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
 <time datetime="2021-07-02" class="published">2 July 2021</time>
@@ -1081,7 +1081,7 @@ within the same HTTP/2 connection.<a href="#section-abstract-1" class="pilcrow">
 (webtransport@ietf.org), which is archived at
 &lt;https://mailarchive.ietf.org/arch/search/?email_list=webtransport&gt;.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 <p id="section-note.1-2">The repository tracking the issues for this draft can be found at
-&lt;https://github.com/ekinnear/draft-webtransport-http2/issues&gt;.  The
+&lt;https://github.com/ietf-wg-webtrans/draft-webtransport-http2&gt;.  The
 web API draft corresponding to this document can be found at
 &lt;https://w3c.github.io/webtransport/&gt;.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
 </section>
@@ -1135,8 +1135,8 @@ web API draft corresponding to this document can be found at
 <nav class="toc"><ul class="compact toc ulEmpty">
 <li class="compact toc ulEmpty" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-terminology" class="xref">Terminology</a></p>
 </li>
             </ul>
@@ -1146,28 +1146,28 @@ web API draft corresponding to this document can be found at
 </li>
           <li class="compact toc ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-session-establishment" class="xref">Session Establishment</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-establishing-a-transport-ca" class="xref">Establishing a Transport-Capable HTTP/2 Connection</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-extended-connect-in-http-2" class="xref">Extended CONNECT in HTTP/2</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.3">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.3.2.3">
                 <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="xref">3.3</a>.  <a href="#name-creating-a-new-session" class="xref">Creating a New Session</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.4">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.3.2.4">
                 <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="xref">3.4</a>.  <a href="#name-limiting-the-number-of-simu" class="xref">Limiting the Number of Simultaneous Sessions</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-webtransport-features" class="xref">WebTransport Features</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.4.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.4.2.1">
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-wt_stream-frame" class="xref">WT_STREAM Frame</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.4.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.4.2.2">
                 <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-wt_datagram-frame" class="xref">WT_DATAGRAM Frame</a></p>
 </li>
             </ul>
@@ -1183,28 +1183,28 @@ web API draft corresponding to this document can be found at
 </li>
           <li class="compact toc ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.8.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-http-2-settings-parameter-r" class="xref">HTTP/2 SETTINGS Parameter Registration</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.8.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.8.2.2">
                 <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-frame-type-registration" class="xref">Frame Type Registration</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.8.2.3">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.8.2.3">
                 <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="xref">8.3</a>.  <a href="#name-http-2-error-code-registry" class="xref">HTTP/2 Error Code Registry</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.8.2.4">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.8.2.4">
                 <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="xref">8.4</a>.  <a href="#name-examples" class="xref">Examples</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-references" class="xref">References</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.9.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.9.2.1">
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="xref">9.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.9.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.9.2.2">
                 <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="xref">9.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a></p>
 </li>
             </ul>
