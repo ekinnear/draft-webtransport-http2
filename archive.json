@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-24T00:30:58.023279+00:00",
+  "timestamp": "2021-07-04T00:40:31.376352+00:00",
   "repo": "ietf-wg-webtrans/draft-webtransport-http2",
   "labels": [
     {
@@ -760,7 +760,7 @@
       "labels": [],
       "body": "Add brief section describing Http2Transport's stance on the properties enumerated in the WebTransport Overview. \r\nWe can move this around later as necessary, but wanted to get the text in to document which optional properties are supported and which are not.\r\n\r\nCloses #8.",
       "createdAt": "2020-07-13T21:44:57Z",
-      "updatedAt": "2020-07-13T22:45:26Z",
+      "updatedAt": "2021-07-02T23:24:07Z",
       "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
       "baseRefName": "master",
       "baseRefOid": "fe600c2c8de64472402f3b0fdf18d12081723f8c",
