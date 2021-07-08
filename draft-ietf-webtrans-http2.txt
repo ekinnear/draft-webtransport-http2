@@ -190,7 +190,7 @@ Table of Contents
 
    In order to create a new WebTransport session, a client can send an
    HTTP CONNECT request.  The ":protocol" pseudo-header field
-   ([RFC8441]) MUST be set to "webtransport" (Section 7.1
+   ([RFC8441]) MUST be set to "webtransport" (Section 7.1 of
    [WEBTRANSPORT-H3]).  The ":scheme" field MUST be "https".  Both the
    ":authority" and the ":path" value MUST be set; those fields indicate
    the desired WebTransport server.  An "Origin" header [RFC6454] MUST
@@ -554,8 +554,9 @@ Table of Contents
 
    [OVERVIEW] Vasiliev, V., "The WebTransport Protocol Framework", Work
               in Progress, Internet-Draft, draft-ietf-webtrans-overview-
-              latest, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              webtrans-overview-latest>.
+              01, 18 October 2020,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-
+              webtrans-overview-01>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -595,9 +596,9 @@ Table of Contents
 
    [WEBTRANSPORT-H3]
               Vasiliev, V., "WebTransport over HTTP/3", Work in
-              Progress, Internet-Draft, draft-ietf-webtrans-
-              http3-latest, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-webtrans-http3-latest>.
+              Progress, Internet-Draft, draft-ietf-webtrans-http3-01, 19
+              May 2021, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-webtrans-http3-01>.
 
 9.2.  Informative References
 
