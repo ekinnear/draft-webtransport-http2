@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-04T00:40:31.376352+00:00",
+  "timestamp": "2021-07-08T00:38:37.899662+00:00",
   "repo": "ietf-wg-webtrans/draft-webtransport-http2",
   "labels": [
     {
@@ -1338,6 +1338,115 @@
               "body": ":)",
               "createdAt": "2021-02-22T21:53:04Z",
               "updatedAt": "2021-02-22T22:03:17Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg1NDQzMDQ5",
+      "title": "Add WT_RST_STREAM and WT_STOP_SENDING",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/pull/18",
+      "state": "OPEN",
+      "author": "afrind",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-07-07T19:10:01Z",
+      "updatedAt": "2021-07-08T00:37:17Z",
+      "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9d43e3d60a8f0f768224a50740e9c537d083d8da",
+      "headRepository": "ietf-wg-webtrans/draft-webtransport-http2",
+      "headRefName": "uni-resets",
+      "headRefOid": "806ed4b5ba1b07db1ac066ee3a5d602ed3c98e2e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the review Martin.  I suppose the higher fidelity version of STOP_SENDING would not change the state of the stream at all, but induce the peer to send a RST_STREAM as QUIC does.  Maybe that is better.",
+          "createdAt": "2021-07-08T00:07:20Z",
+          "updatedAt": "2021-07-08T00:07:20Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "body": "Actually, there is worse: when I send STOP_SENDING, I no longer know when the peer has received and acted on that without an explicit stream termination signal, so I can't transition the stream to a closed state.",
+          "createdAt": "2021-07-08T00:08:19Z",
+          "updatedAt": "2021-07-08T00:08:19Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Actually, there is worse: when I send STOP_SENDING, I no longer know when the peer has received and acted on that without an explicit stream termination signal, so I can't transition the stream to a closed state.\r\n\r\nWait, how is this different than QUIC?  You can't close a bidirectional stream until the peer sends you a FIN or RST.",
+          "createdAt": "2021-07-08T00:11:45Z",
+          "updatedAt": "2021-07-08T00:11:45Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "body": "Right; I was reading your description of STOP_SENDING as changing stream state, either at the point that it was sent or received.  In that case, if a stream is \"open\", the sender of STOP_SENDING might believe that all it needs to do is send RESET_STREAM to close the stream completely.  If it does so, the peer will receive those frames and then both peers will believe the stream to be closed.  But the sender of STOP_SENDING has no way to distinguish between that set of circumstances and one where the peer takes an arbitrary amount of time to process the frames.  The receiver of STOP_SENDING might just keep sending data indefinitely.  How does the receiver of those frames know when the other side has truly stopped?\r\n\r\nYou might say \"too bad\".  After all, the only thing you need to do is keep counting against connection-level flow control, but it makes the \"closed\" state that much harder to manage.",
+          "createdAt": "2021-07-08T00:17:22Z",
+          "updatedAt": "2021-07-08T00:17:22Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As written, STOP_SENDING does change stream state, which would allow the sender to move to closed unilaterally (for example, send WT_RST_STREAM and WT_STOP_SENDING together).  DATA frames may trickle in after that for the closed stream, you just keep handling them for connection flow control -- this is the same as RST_STREAM in vanilla H2.\r\n\r\nIf we make it like QUIC instead, where STOP_SENDING does not affect state, the sender of the STOP_SENDING has to wait for WT_RST_STREAM or a FIN to move to closed.  \r\n\r\nSo I think either model is fine and I don't have a stylistic preference.  I'm wondering if it has an effect on the stream limit accounting, but I don't think it does?  The H2 model frees the streams 1/2 RTT faster.",
+          "createdAt": "2021-07-08T00:37:17Z",
+          "updatedAt": "2021-07-08T00:37:17Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAxMzg5Mjc0",
+          "commit": {
+            "abbreviatedOid": "806ed4b"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks @afrind!",
+          "createdAt": "2021-07-07T19:50:19Z",
+          "updatedAt": "2021-07-07T19:51:08Z",
+          "comments": [
+            {
+              "originalPosition": 75,
+              "body": "```suggestion\nis being abandoned.\n```\n",
+              "createdAt": "2021-07-07T19:50:19Z",
+              "updatedAt": "2021-07-07T19:51:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAxNTM1NzI2",
+          "commit": {
+            "abbreviatedOid": "806ed4b"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Thanks for writing this up Alan.\r\n\r\nThis works.  Though I'm not sure about the STOP_SENDING analogue; QUIC permits the sender to choose the ultimate code for RESET_STREAM, even if it is generally copied  from STOP_SENDING.  I know that we mostly don't need to include RESET_STREAM here as the stream size accounting isn't as critical, so maybe perfect fidelity isn't needed.",
+          "createdAt": "2021-07-08T00:00:17Z",
+          "updatedAt": "2021-07-08T00:03:01Z",
+          "comments": [
+            {
+              "originalPosition": 102,
+              "body": "```suggestion\r\na stream that is already \"closed\" or \"half-closed (local)\", the recipient SHOULD\r\n```",
+              "createdAt": "2021-07-08T00:00:17Z",
+              "updatedAt": "2021-07-08T00:03:01Z"
+            },
+            {
+              "originalPosition": 108,
+              "body": "Is \"credit\" the right term here?  \"count the frame length toward the FC window\" perhaps.",
+              "createdAt": "2021-07-08T00:01:00Z",
+              "updatedAt": "2021-07-08T00:03:01Z"
             }
           ]
         }
