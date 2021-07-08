@@ -5,13 +5,13 @@
 webtrans                                                     A. Frindell
 Internet-Draft                                             Facebook Inc.
 Intended status: Standards Track                              E. Kinnear
-Expires: 8 January 2022                                         T. Pauly
+Expires: 9 January 2022                                         T. Pauly
                                                               Apple Inc.
                                                              V. Vasiliev
                                                                   Google
                                                                   G. Xie
                                                            Facebook Inc.
-                                                             7 July 2021
+                                                             8 July 2021
 
 
                        WebTransport using HTTP/2
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2022.
+   This Internet-Draft will expire on 9 January 2022.
 
 Copyright Notice
 
@@ -305,8 +305,8 @@ Table of Contents
                     Figure 2: WT_RST_STREAM Frame Format
 
    The WT_RST_STREAM frame contains a single unsigned, 32-bit integer
-   identifying the error code (Section 7).  The error code indicates why
-   the stream is being abruptly terminated for writing.
+   identifying the error code.  The error code indicates why the stream
+   is being abruptly terminated for writing.
 
    The WT_RST_STREAM frame does not define any flags.
 
@@ -360,8 +360,8 @@ Table of Contents
                    Figure 3: WT_STOP_SENDING Frame Format
 
    The WT_STOP_SENDING frame contains a single unsigned, 32-bit integer
-   identifying the error code (Section 7).  The error code indicates why
-   the reading the stream is being abanonded.
+   identifying the error code.  The error code indicates why the reading
+   the stream is being abandoned.
 
    The WT_STOP_SENDING frame does not define any flags.
 
@@ -391,14 +391,14 @@ Table of Contents
    sender might have closed or reset the stream while the
    WT_STOP_SENDING was in flight.  If a WT_STOP_SENDING frame
    identifying a stream that is already "closed" or "half-closed
-   (local"), the recipient SHOULD ignore the frame.
+   (local)", the recipient SHOULD ignore the frame.
 
    It is also possible to receive DATA frames on a WebTransport stream
    in the "half-closed (remote)" or "closed" states if the stream
    transitioned there via WT_STOP_SENDING.  If a DATA frame is received
    on a WebTransport stream in one of these states, the recipient MUST
-   ignore the frame and credit the frame length to the peer's connection
-   flow control window.
+   account for its contribution against the connection flow-control
+   window and MUST NOT treat it as an error.
 
    A WT_STOP_SENDING frame with a length other than 4 octets MUST be
    treated as a connection error (Section 5.4.1) of type
