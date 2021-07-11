@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-08T00:38:37.899662+00:00",
+  "timestamp": "2021-07-11T00:44:37.380622+00:00",
   "repo": "ietf-wg-webtrans/draft-webtransport-http2",
   "labels": [
     {
@@ -62,7 +62,7 @@
       "labels": [],
       "body": "The [overview](https://tools.ietf.org/html/draft-vvv-webtransport-overview-01) contains the following text: \r\n```\r\no  Each new stream would require a WebSocket handshake to agree on\r\n      application protocol used, meaning that it would take at least one\r\n      RTT to establish each new stream before the client can write to\r\n      it.\r\n```\r\n\r\nWe should consider documenting how it's possible to send the connect frame and then the next stream, since we can guarantee in-order delivery (and processing?) of the data.\r\n\r\nWe can also note that this is orthogonal to 0-RTT.\r\n```\r\n   In some cases, the transport protocol might allow transmitting data\r\n   before the session is established; an example is TLS 0-RTT data.\r\n   Since this data can be replayed by attackers, it MUST NOT be used\r\n   unless the client has explicitly requested 0-RTT for specific streams\r\n   or datagrams it knows to be safely replayable.\r\n```\r\n",
       "createdAt": "2020-07-13T20:48:14Z",
-      "updatedAt": "2020-11-15T23:02:35Z",
+      "updatedAt": "2021-07-08T04:49:06Z",
       "closedAt": null,
       "comments": [
         {
@@ -78,6 +78,13 @@
           "body": "It's possible that this would only work over HTTP/2, which does provide an interesting inversion from the usual benefits that you get from HTTP/3. It would be really nice if these were in a single stream in HTTP/3 as well, but I don't really see that happening if we have CONNECT followed by other streams to which that CONNECT referred.",
           "createdAt": "2020-11-15T23:02:35Z",
           "updatedAt": "2020-11-15T23:02:35Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I don't think that this is possible with any version of this design, because the client won't have server settings when it sends 0-RTT.  HTTP/2 assumes that default settings are in play, which makes 0-RTT usable for regular requests, but the CONNECT here depends on a setting.\r\n\r\nThat doesn't seem like it is worth fixing for this mapping.  I also have reservations about the value in making 0-RTT work in the HTTP/3 mapping, but that should be taken up there.",
+          "createdAt": "2021-07-08T04:49:06Z",
+          "updatedAt": "2021-07-08T04:49:06Z"
         }
       ]
     },
@@ -275,6 +282,38 @@
       "body": "QUIC and HTTP/3 support resetting only half of a bidirectional stream.  If WebTransport requires this functionality, then this draft would need additional frames to convey those signals (WT_RESET_STREAM and WT_STOP_SENDING).",
       "createdAt": "2021-05-25T16:09:19Z",
       "updatedAt": "2021-05-25T16:09:19Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 23,
+      "id": "MDU6SXNzdWU5Mzk0NzUyMzA=",
+      "title": "Coalescing effects on security",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/issues/23",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document claims that two sessions that share a connection as the result of coalescing might be mutually distrustful.  I don't think that this is correct.\r\n\r\nAt least from the client's perspective, the two origins can read the plaintext of the message sent to each other.  They are also able to exhaust the shared pool of available streams by making HTTP requests.   The degree to which WebTransport creates any additional risk here has to be minimal.  Yes, it becomes slightly easier to mount a resource exhaustion attack, but it is - at least from the perspective of the client - only self-inflicted.\r\n\r\nIt is also unclear here that any single scheme would be effective without clearer - and ideally deterministic - limits being set.  I'll open a separate issue on that.",
+      "createdAt": "2021-07-08T05:09:17Z",
+      "updatedAt": "2021-07-08T05:09:17Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 24,
+      "id": "MDU6SXNzdWU5Mzk0Nzg2Nzc=",
+      "title": "Stream limits",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/issues/24",
+      "state": "OPEN",
+      "author": "martinthomson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is likely shared with the HTTP/3 mapping also, but I'm here first.\r\n\r\nWeb applications will want some degree of certainty about the streams they are able to access.  As they also operate servers, this is probably not so bad in the client-to-server direction.  The main concern for client-to-server is the potential for the connection to be used for HTTP requests that consume these limits.  In the server-to-client direction clients might need to provide some number of streams that it would guarantee that a server can use for a given session.\r\n\r\nAs multiple sessions are involved, this gets harder, because the web security model might prevent us from exposing information about what other origins are using a shared connection for.  That said, it's not clear that there is any value in withholding this information either (see #23) as the security boundary is essentially already gone once coalescing is involved.\r\n\r\n(I'm deliberately not considering isolation of state by top-level browsing context; I expect that no coalescing or connection sharing would occur for different top-level sites.)",
+      "createdAt": "2021-07-08T05:15:41Z",
+      "updatedAt": "2021-07-08T05:15:41Z",
       "closedAt": null,
       "comments": []
     }
@@ -1348,24 +1387,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Njg1NDQzMDQ5",
       "title": "Add WT_RST_STREAM and WT_STOP_SENDING",
       "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/pull/18",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "afrind",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2021-07-07T19:10:01Z",
-      "updatedAt": "2021-07-08T00:37:17Z",
+      "updatedAt": "2021-07-09T15:42:05Z",
       "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
       "baseRefName": "main",
       "baseRefOid": "9d43e3d60a8f0f768224a50740e9c537d083d8da",
       "headRepository": "ietf-wg-webtrans/draft-webtransport-http2",
       "headRefName": "uni-resets",
-      "headRefOid": "806ed4b5ba1b07db1ac066ee3a5d602ed3c98e2e",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "071ee68c076fb5d4f6b4f8fa20dd2b3fe19f7b5b",
+      "closedAt": "2021-07-09T15:42:05Z",
+      "mergedAt": "2021-07-09T15:42:05Z",
+      "mergedBy": "afrind",
+      "mergeCommit": {
+        "oid": "3eae99522b1ed3cf39ec0997dcf63b645c2d227f"
+      },
       "comments": [
         {
           "author": "afrind",
@@ -1376,7 +1417,7 @@
         },
         {
           "author": "martinthomson",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Actually, there is worse: when I send STOP_SENDING, I no longer know when the peer has received and acted on that without an explicit stream termination signal, so I can't transition the stream to a closed state.",
           "createdAt": "2021-07-08T00:08:19Z",
           "updatedAt": "2021-07-08T00:08:19Z"
@@ -1390,7 +1431,7 @@
         },
         {
           "author": "martinthomson",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Right; I was reading your description of STOP_SENDING as changing stream state, either at the point that it was sent or received.  In that case, if a stream is \"open\", the sender of STOP_SENDING might believe that all it needs to do is send RESET_STREAM to close the stream completely.  If it does so, the peer will receive those frames and then both peers will believe the stream to be closed.  But the sender of STOP_SENDING has no way to distinguish between that set of circumstances and one where the peer takes an arbitrary amount of time to process the frames.  The receiver of STOP_SENDING might just keep sending data indefinitely.  How does the receiver of those frames know when the other side has truly stopped?\r\n\r\nYou might say \"too bad\".  After all, the only thing you need to do is keep counting against connection-level flow control, but it makes the \"closed\" state that much harder to manage.",
           "createdAt": "2021-07-08T00:17:22Z",
           "updatedAt": "2021-07-08T00:17:22Z"
@@ -1401,6 +1442,20 @@
           "body": "As written, STOP_SENDING does change stream state, which would allow the sender to move to closed unilaterally (for example, send WT_RST_STREAM and WT_STOP_SENDING together).  DATA frames may trickle in after that for the closed stream, you just keep handling them for connection flow control -- this is the same as RST_STREAM in vanilla H2.\r\n\r\nIf we make it like QUIC instead, where STOP_SENDING does not affect state, the sender of the STOP_SENDING has to wait for WT_RST_STREAM or a FIN to move to closed.  \r\n\r\nSo I think either model is fine and I don't have a stylistic preference.  I'm wondering if it has an effect on the stream limit accounting, but I don't think it does?  The H2 model frees the streams 1/2 RTT faster.",
           "createdAt": "2021-07-08T00:37:17Z",
           "updatedAt": "2021-07-08T00:37:17Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Ugh, I should know this stuff better, I only recently rewrote the closing bit in h2 to deal with this problem.\r\n\r\n> this is the same as RST_STREAM in vanilla H2.\r\n\r\nOf course.  It's bad, but no worse than status quo.  Thanks for correcting me.\r\n\r\n(Full transparency: I think that the QUIC stream model is so much better than h2 that I can no longer stomach these minor infidelities in h2.  This PR does manage to balance the need to provide API consistency across versions without fixing/changing h2's problems.  I'm sure I'll manage to swallow my distaste eventually if we go this way.)\r\n",
+          "createdAt": "2021-07-08T00:51:28Z",
+          "updatedAt": "2021-07-08T00:51:28Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I think that the QUIC stream model is so much better than h2 that I can no longer stomach these minor infidelities in h2\r\n\r\nHeh. Since this is merging an H3 feature into H2 I feel like we could pick either model and still claim to be consistent.  For now, I'll leave this H2 style.",
+          "createdAt": "2021-07-08T14:32:04Z",
+          "updatedAt": "2021-07-08T14:32:04Z"
         }
       ],
       "reviews": [
@@ -1430,7 +1485,7 @@
             "abbreviatedOid": "806ed4b"
           },
           "author": "martinthomson",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "Thanks for writing this up Alan.\r\n\r\nThis works.  Though I'm not sure about the STOP_SENDING analogue; QUIC permits the sender to choose the ultimate code for RESET_STREAM, even if it is generally copied  from STOP_SENDING.  I know that we mostly don't need to include RESET_STREAM here as the stream size accounting isn't as critical, so maybe perfect fidelity isn't needed.",
           "createdAt": "2021-07-08T00:00:17Z",
@@ -1447,6 +1502,160 @@
               "body": "Is \"credit\" the right term here?  \"count the frame length toward the FC window\" perhaps.",
               "createdAt": "2021-07-08T00:01:00Z",
               "updatedAt": "2021-07-08T00:03:01Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg1NjgwMDk0",
+      "title": "Fix the note",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/pull/19",
+      "state": "MERGED",
+      "author": "martinthomson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add links to the links.\r\nRemove .note.xml, which wasn't being used.",
+      "createdAt": "2021-07-08T04:42:24Z",
+      "updatedAt": "2021-07-08T14:00:53Z",
+      "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9d43e3d60a8f0f768224a50740e9c537d083d8da",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "fix-note",
+      "headRefOid": "add59c1ac58d676a735399aec23b0c1494776f0e",
+      "closedAt": "2021-07-08T14:00:53Z",
+      "mergedAt": "2021-07-08T14:00:53Z",
+      "mergedBy": "afrind",
+      "mergeCommit": {
+        "oid": "33cce3b81a9111e69176c29a04d8e3cff9b8bf1a"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 20,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg1NjgwMTY4",
+      "title": "Remove unused CI",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/pull/20",
+      "state": "MERGED",
+      "author": "martinthomson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Assuming that you use Actions, that is.",
+      "createdAt": "2021-07-08T04:42:37Z",
+      "updatedAt": "2021-07-08T14:02:47Z",
+      "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9d43e3d60a8f0f768224a50740e9c537d083d8da",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "only-one-ci",
+      "headRefOid": "9be9fe1fd901b68889f1c3db3cdab7203573ce0b",
+      "closedAt": "2021-07-08T14:02:47Z",
+      "mergedAt": "2021-07-08T14:02:47Z",
+      "mergedBy": "afrind",
+      "mergeCommit": {
+        "oid": "17f0b8a8aba3e6d1e0134ce9d69d587abde31048"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 21,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg1Njg0NDYy",
+      "title": "The query component is relevant too",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/pull/21",
+      "state": "MERGED",
+      "author": "martinthomson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This might seem unfortunate, but it's how the protocol works.\r\n\r\nUpdate the link to point to HTTP spec instead.",
+      "createdAt": "2021-07-08T04:54:47Z",
+      "updatedAt": "2021-07-08T14:03:57Z",
+      "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
+      "baseRefName": "main",
+      "baseRefOid": "9d43e3d60a8f0f768224a50740e9c537d083d8da",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "http-uri",
+      "headRefOid": "c89b3249415f18af801f5d7d04c910a4cb87cd12",
+      "closedAt": "2021-07-08T14:03:57Z",
+      "mergedAt": "2021-07-08T14:03:57Z",
+      "mergedBy": "afrind",
+      "mergeCommit": {
+        "oid": "1fa717b1a1a988cdad8a15f8d674d8e7f271a105"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAyMTA1NjY0",
+          "commit": {
+            "abbreviatedOid": "c89b324"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-08T14:03:33Z",
+          "updatedAt": "2021-07-08T14:03:33Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "I think this was copied from H3 so you might want to check there also?",
+              "createdAt": "2021-07-08T14:03:33Z",
+              "updatedAt": "2021-07-08T14:03:33Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njg1Njg2Mjc5",
+      "title": "Fix references",
+      "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/pull/22",
+      "state": "MERGED",
+      "author": "martinthomson",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "There was a local reference that was just typed out.\r\n\r\nThe references to other documents cargo-culted from QUIC, but that only\r\nworks if the documents are in the same repo.  You have to pull\r\nreferences from the datatracker.\r\n\r\nUse the nice reference format in a few places.",
+      "createdAt": "2021-07-08T05:00:12Z",
+      "updatedAt": "2021-07-08T14:09:42Z",
+      "baseRepository": "ietf-wg-webtrans/draft-webtransport-http2",
+      "baseRefName": "main",
+      "baseRefOid": "1fa717b1a1a988cdad8a15f8d674d8e7f271a105",
+      "headRepository": "martinthomson/draft-webtransport-http2",
+      "headRefName": "who-types-section-x",
+      "headRefOid": "a9a22fd25a6fd45196e362eedf964f02d5fcafb6",
+      "closedAt": "2021-07-08T14:09:42Z",
+      "mergedAt": "2021-07-08T14:09:42Z",
+      "mergedBy": "afrind",
+      "mergeCommit": {
+        "oid": "fb4dacb316fee9f4a05782b34906c42a9c2e85af"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NzAyMTA5NDE4",
+          "commit": {
+            "abbreviatedOid": "64ed6d9"
+          },
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-07-08T14:06:33Z",
+          "updatedAt": "2021-07-08T14:06:34Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "This also came from the webtrans-h3 spec",
+              "createdAt": "2021-07-08T14:06:33Z",
+              "updatedAt": "2021-07-08T14:06:34Z"
             }
           ]
         }
