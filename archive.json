@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-11T00:44:37.380622+00:00",
+  "timestamp": "2021-07-20T00:43:10.100996+00:00",
   "repo": "ietf-wg-webtrans/draft-webtransport-http2",
   "labels": [
     {
@@ -62,7 +62,7 @@
       "labels": [],
       "body": "The [overview](https://tools.ietf.org/html/draft-vvv-webtransport-overview-01) contains the following text: \r\n```\r\no  Each new stream would require a WebSocket handshake to agree on\r\n      application protocol used, meaning that it would take at least one\r\n      RTT to establish each new stream before the client can write to\r\n      it.\r\n```\r\n\r\nWe should consider documenting how it's possible to send the connect frame and then the next stream, since we can guarantee in-order delivery (and processing?) of the data.\r\n\r\nWe can also note that this is orthogonal to 0-RTT.\r\n```\r\n   In some cases, the transport protocol might allow transmitting data\r\n   before the session is established; an example is TLS 0-RTT data.\r\n   Since this data can be replayed by attackers, it MUST NOT be used\r\n   unless the client has explicitly requested 0-RTT for specific streams\r\n   or datagrams it knows to be safely replayable.\r\n```\r\n",
       "createdAt": "2020-07-13T20:48:14Z",
-      "updatedAt": "2021-07-08T04:49:06Z",
+      "updatedAt": "2021-07-20T00:28:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -85,6 +85,27 @@
           "body": "I don't think that this is possible with any version of this design, because the client won't have server settings when it sends 0-RTT.  HTTP/2 assumes that default settings are in play, which makes 0-RTT usable for regular requests, but the CONNECT here depends on a setting.\r\n\r\nThat doesn't seem like it is worth fixing for this mapping.  I also have reservations about the value in making 0-RTT work in the HTTP/3 mapping, but that should be taken up there.",
           "createdAt": "2021-07-08T04:49:06Z",
           "updatedAt": "2021-07-08T04:49:06Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This issue says that it is orthogonal to 0-RTT.  It's about sending the CONNECT and one more WT_STREAM/WT_DATAGRAMS in a single flight.  The H3 draft was updated with a section saying this is allowed: https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/blob/main/draft-ietf-webtrans-http3.md#buffering-incoming-streams-and-datagrams.",
+          "createdAt": "2021-07-19T22:09:57Z",
+          "updatedAt": "2021-07-19T22:09:57Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Yeah, the h3 draft can allow 0-RTT, but I don't see a way to have the h2 draft do that without taking a dependency on ALPS or some persistent settings concept.  I mean, it could define its own persistent settings concept, but that seems worse than ALPS (and I'm not a big fan, at least for h2).",
+          "createdAt": "2021-07-20T00:26:43Z",
+          "updatedAt": "2021-07-20T00:26:43Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Oops, I should have added.  I don't see any reason to allow sending prior to session *confirmation*.  You might, however, allow new streams to be created prior to getting a 200 response on the session.  For that, it really depends on how you might plan to deal with resource management.  Of course, if you could send data inside the primary stream, that makes this largely moot.",
+          "createdAt": "2021-07-20T00:28:38Z",
+          "updatedAt": "2021-07-20T00:28:38Z"
         }
       ]
     },
@@ -125,15 +146,15 @@
       "id": "MDU6SXNzdWU2NTYxMjk0OTk=",
       "title": "Describe datagram usage",
       "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ekinnear",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The [Overview](https://tools.ietf.org/html/draft-vvv-webtransport-overview-01) places requirements on how WebTransport handles datagrams:\r\n\r\n```\r\n   The WebTransport sender is not expected to retransmit datagrams,\r\n   though it may if it is using a TCP-based protocol or some other\r\n   underlying protocol that requires reliable delivery.  WebTransport\r\n   datagrams are not expected to be flow controlled, meaning that the\r\n   receiver might drop datagrams if the application is not consuming\r\n   them fast enough.\r\n```\r\n\r\nWe should describe that Http2Transport is going to retransmit datagrams (being over TCP/TLS/HTTP2) and offer some text about how these interact with flow control.",
       "createdAt": "2020-07-13T20:49:04Z",
-      "updatedAt": "2020-11-09T23:19:08Z",
-      "closedAt": null,
+      "updatedAt": "2021-07-19T21:21:48Z",
+      "closedAt": "2021-07-19T21:21:48Z",
       "comments": [
         {
           "author": "afrind",
@@ -169,6 +190,13 @@
           "body": "Regarding\r\n\r\n> do we want to continue using routing stream IDs, or switch to using \"Session IDs\" like h3 webtransport? \r\n\r\nLooks like H3 is replacing session ID with stream ID, so we should keep it as is ;)\r\n\r\nhttps://github.com/vasilvv/webtransport/pull/21",
           "createdAt": "2020-11-09T23:19:08Z",
           "updatedAt": "2020-11-09T23:19:08Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think this can be closed.  The current draft describes how to send datagrams using the WT_DATAGRAM frame, that these frames will be retransmitted (because TCP) and that they are not subject to flow control.",
+          "createdAt": "2021-07-19T21:21:48Z",
+          "updatedAt": "2021-07-19T21:21:48Z"
         }
       ]
     },
@@ -257,7 +285,7 @@
       "labels": [],
       "body": "It's possible that a WebTransport endpoint may wish to drain a session, such that the peer would know not to create new streams on that session, but existing sessions could complete before closing the session's stream.  We need something like GOAWAY, but scoped to a single session.\r\n\r\nThis is useful when there are multiple sessions (and possibly other HTTP traffic) multiplexed on a single connection, which are routed to different upstream servers.  If a single upstream server needs to restart (and gracefully drain), it would be nice to not have to drain all the sessions/traffic from the client's connection.",
       "createdAt": "2020-07-23T22:58:24Z",
-      "updatedAt": "2020-07-26T02:40:55Z",
+      "updatedAt": "2021-07-19T21:16:57Z",
       "closedAt": null,
       "comments": [
         {
@@ -266,6 +294,13 @@
           "body": "Could the Connect Stream be used for this (since it is 1:1 a session already and the lifetime is tied to that connect stream)? I guess we're already there a bit, but just resetting that stream loses the routing information you need to clean up, hence the need for something like GOAWAY, like you said. \ud83d\ude04 ",
           "createdAt": "2020-07-26T02:40:44Z",
           "updatedAt": "2020-07-26T02:40:55Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we should let the design happen for H3 (https://github.com/ietf-wg-webtrans/draft-ietf-webtrans-http3/issues/27) and then translate that here.",
+          "createdAt": "2021-07-19T21:16:57Z",
+          "updatedAt": "2021-07-19T21:16:57Z"
         }
       ]
     },
@@ -274,16 +309,24 @@
       "id": "MDU6SXNzdWU5MDEwMzY0MTU=",
       "title": "Unidirectional stream reset",
       "url": "https://github.com/ietf-wg-webtrans/draft-webtransport-http2/issues/17",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "afrind",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "QUIC and HTTP/3 support resetting only half of a bidirectional stream.  If WebTransport requires this functionality, then this draft would need additional frames to convey those signals (WT_RESET_STREAM and WT_STOP_SENDING).",
       "createdAt": "2021-05-25T16:09:19Z",
-      "updatedAt": "2021-05-25T16:09:19Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-07-19T19:25:55Z",
+      "closedAt": "2021-07-19T19:25:55Z",
+      "comments": [
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed by #18 ",
+          "createdAt": "2021-07-19T19:25:55Z",
+          "updatedAt": "2021-07-19T19:25:55Z"
+        }
+      ]
     },
     {
       "number": 23,
