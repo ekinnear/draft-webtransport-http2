@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-20T00:43:10.100996+00:00",
+  "timestamp": "2021-07-22T00:41:25.044072+00:00",
   "repo": "ietf-wg-webtrans/draft-webtransport-http2",
   "labels": [
     {
@@ -62,7 +62,7 @@
       "labels": [],
       "body": "The [overview](https://tools.ietf.org/html/draft-vvv-webtransport-overview-01) contains the following text: \r\n```\r\no  Each new stream would require a WebSocket handshake to agree on\r\n      application protocol used, meaning that it would take at least one\r\n      RTT to establish each new stream before the client can write to\r\n      it.\r\n```\r\n\r\nWe should consider documenting how it's possible to send the connect frame and then the next stream, since we can guarantee in-order delivery (and processing?) of the data.\r\n\r\nWe can also note that this is orthogonal to 0-RTT.\r\n```\r\n   In some cases, the transport protocol might allow transmitting data\r\n   before the session is established; an example is TLS 0-RTT data.\r\n   Since this data can be replayed by attackers, it MUST NOT be used\r\n   unless the client has explicitly requested 0-RTT for specific streams\r\n   or datagrams it knows to be safely replayable.\r\n```\r\n",
       "createdAt": "2020-07-13T20:48:14Z",
-      "updatedAt": "2021-07-20T00:28:38Z",
+      "updatedAt": "2021-07-20T14:24:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -106,6 +106,13 @@
           "body": "Oops, I should have added.  I don't see any reason to allow sending prior to session *confirmation*.  You might, however, allow new streams to be created prior to getting a 200 response on the session.  For that, it really depends on how you might plan to deal with resource management.  Of course, if you could send data inside the primary stream, that makes this largely moot.",
           "createdAt": "2021-07-20T00:28:38Z",
           "updatedAt": "2021-07-20T00:28:38Z"
+        },
+        {
+          "author": "afrind",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The H3 draft disallows 0-RTT:\r\n\r\n> WebTransport over HTTP/3 does not support 0-RTT.",
+          "createdAt": "2021-07-20T14:24:15Z",
+          "updatedAt": "2021-07-20T14:24:15Z"
         }
       ]
     },
